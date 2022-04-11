@@ -35,7 +35,7 @@ func (h customerHandler) GetCustomerById(w http.ResponseWriter, r *http.Request)
 	customer, err := h.cusService.GetCustomerById(customerId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "customer error")
+		fmt.Fprintf(w, err.Error())
 	}
 
 	w.Header().Set("Content-Type", "application/json")

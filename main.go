@@ -20,8 +20,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	custommerRepository := repository.NewCustomerRepositoryDB(db)
-	custService := service.NewCustomerService(custommerRepository)
+	customerRepositoryDB := repository.NewCustomerRepositoryDB(db)
+	customerRepositoryMock := repository.NewCustomerRepositoryMock()
+	_ = customerRepositoryDB
+	custService := service.NewCustomerService(customerRepositoryMock)
 	customerHandler := handler.NewCustomerHandler(custService)
 
 	router := mux.NewRouter()
