@@ -2,6 +2,7 @@ package main
 
 import (
 	"bank/repository"
+	"bank/service"
 	"fmt"
 	"log"
 
@@ -18,16 +19,12 @@ func main() {
 
 	custommerRepository := repository.NewCustomerRepositoryDB(db)
 
-	// customers, err := custommerRepository.GetAll()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Print(customers)
+	custService := service.NewCustomerService(custommerRepository)
 
-	customer, err := custommerRepository.GetById(2002)
+	customers, err := custService.GetCustomers()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Print(customer)
 
+	fmt.Println(customers)
 }
