@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bank/errs"
 	"bank/service"
 	"encoding/json"
 	"fmt"
@@ -34,8 +35,15 @@ func (h customerHandler) GetCustomerById(w http.ResponseWriter, r *http.Request)
 	customerId, _ := strconv.Atoi(mux.Vars(r)["customerId"])
 	customer, err := h.cusService.GetCustomerById(customerId)
 	if err != nil {
+		appError, ok := err.(errs.AppError)
+		if ok {
+			w.WriteHeader(appError.Code)
+			fmt.Fprintln(w, appError.Message)
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, err.Error())
+		fmt.Fprintln(w, err)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bank/handler"
+	"bank/logs"
 	"bank/repository"
 	"bank/service"
 	"fmt"
@@ -35,6 +36,7 @@ func main() {
 	router.HandleFunc("/customers", customerHandler.GetCustomer).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{customerId:[0-9]+}", customerHandler.GetCustomerById).Methods(http.MethodGet)
 
+	logs.Info("Bank Service started at port:" + viper.GetString("app.port"))
 	http.ListenAndServe(fmt.Sprintf(":%v", viper.GetString("app.port")), router)
 
 }
