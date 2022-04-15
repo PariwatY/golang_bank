@@ -19,3 +19,14 @@ Lib (only important lib that i thought haha)
  - Using for reducing a syntax when query data
 
  
+
+// Create account
+curl localhost:8081/customers/2003/accounts -i -X POST -H  "content-type:application/json" -d '{"account_type":"saving","amount":29999.83}'
+// Get account by customer id
+curl localhost:8081/customers/2001/accounts -i
+
+
+// Test amount < 5000
+curl localhost:8081/customers/2004/accounts -i -X POST -H  "content-type:application/json" -d '{"account_type":"saving","amount":200}'
+// Test accoun type  is not saving and checking
+curl localhost:8081/customers/2004/accounts -i -X POST -H  "content-type:application/json" -d '{"account_type":"ss","amount":5000}'

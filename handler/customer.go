@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"bank/errs"
 	"bank/service"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -22,8 +20,7 @@ func NewCustomerHandler(cusService service.CustomerService) customerHandler {
 func (h customerHandler) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	customers, err := h.cusService.GetCustomers()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "customer error")
+		handleError(w, err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -35,14 +32,7 @@ func (h customerHandler) GetCustomerById(w http.ResponseWriter, r *http.Request)
 	customerId, _ := strconv.Atoi(mux.Vars(r)["customerId"])
 	customer, err := h.cusService.GetCustomerById(customerId)
 	if err != nil {
-		appError, ok := err.(errs.AppError)
-		if ok {
-			w.WriteHeader(appError.Code)
-			fmt.Fprintln(w, appError.Message)
-			return
-		}
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintln(w, err)
+		handleError(w, err)
 		return
 	}
 

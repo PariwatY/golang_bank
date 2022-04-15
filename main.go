@@ -26,15 +26,23 @@ func main() {
 	db := initDB()
 
 	customerRepositoryDB := repository.NewCustomerRepositoryDB(db)
-	customerRepositoryMock := repository.NewCustomerRepositoryMock()
-	_ = customerRepositoryMock
 	custService := service.NewCustomerService(customerRepositoryDB)
 	customerHandler := handler.NewCustomerHandler(custService)
 
+	accountRepositoryDB := repository.NewAccountRepositoryDB(db)
+	accService := service.NewAccountService(accountRepositoryDB)
+	accountHandler := handler.NewAccountHandler(accService)
+	_ = accountHandler
+
 	router := mux.NewRouter()
 
+	// Customer Handler
 	router.HandleFunc("/customers", customerHandler.GetCustomer).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{customerId:[0-9]+}", customerHandler.GetCustomerById).Methods(http.MethodGet)
+
+	// Account Handler
+	router.HandleFunc("/customers/{customerId:[0-9]+}/accounts", accountHandler.GetAccountByCustId).Methods(http.MethodGet)
+	router.HandleFunc("/customers/{customerId:[0-9]+}/accounts", accountHandler.NewAccount).Methods(http.MethodPost)
 
 	logs.Info("Bank Service started at port:" + viper.GetString("app.port"))
 	http.ListenAndServe(fmt.Sprintf(":%v", viper.GetString("app.port")), router)
